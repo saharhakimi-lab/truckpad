@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אקדמיית GIMP של האחוואנים - הדבקת מדבקה על משאית</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts - Assistant & Heebo -->
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Assistant', 'Heebo', sans-serif;
+      background-color: #FAF7F0;
+    }
+    .cream-bg { background-color: #FAF7F0; }
+    .card-shadow { box-shadow: 0 4px 20px -2px rgba(139, 92, 26, 0.08); }
+    
+    /* מניעת הצגת פס גלילה בטאבים */
+    .tabs-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .tabs-scroll {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    @keyframes tuvia-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.55); }
+      50% { box-shadow: 0 0 0 14px rgba(14, 165, 233, 0); }
+    }
+    .tuvia-fab {
+      animation: tuvia-glow 2.2s infinite;
+    }
+
+    /* אנימציית סיבוב לאוואטר המנטור המטורלל */
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .avatar-spin {
+      animation: spin-slow 8s linear infinite;
+    }
+
+    /* עיצוב ממוסגר למושגים באנגלית ומקשים */
+    .eng-tag {
+      display: inline-block;
+      direction: ltr;
+      unicode-bidi: isolate;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      padding: 0.1rem 0.45rem;
+      border-radius: 0.375rem;
+      font-size: 0.875em;
+      font-weight: 700;
+      margin: 0 0.15rem;
+    }
+  </style>
+</head>
+<body class="cream-bg text-stone-800 min-h-screen pb-12 transition-all duration-300">
+
+  <!-- 🌟 חלונית צפה מתוקנת 🌟 -->
+  <a href="https://gemini.google.com/gem/182jqjh6fxGeiMJ3R2si6dovgXIugR93N?usp=sharing" target="_blank" rel="noopener"
+     class="tuvia-fab fixed bottom-6 left-6 z-50 block w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-2xl transition duration-300 transform hover:scale-105 border-4 border-white bg-white">
+    <img src="https://lh3.googleusercontent.com/d/1BHxytxfATgrv3wpk_8slqpRX08p2Dzml" alt="טוביה הבוט" class="w-full h-full object-cover block">
+  </a>
+
+  <!-- חלון חגיגת סיום משימה -->
+  <div id="celebration-overlay" class="fixed inset-0 bg-sky-500/20 backdrop-blur-xs z-50 flex flex-col items-center justify-center hidden">
+    <div class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-sky-500 text-center max-w-sm mx-4 transform scale-95 transition-transform duration-300">
+      <span class="text-7xl mb-4 block animate-bounce">🏆🚚✨</span>
+      <h3 class="text-3xl font-extrabold text-sky-600 mb-2">מאסטר <span class="eng-tag">GIMP</span> אמיתי!</h3>
+      <p class="text-stone-700 font-bold text-lg mb-6">הדבקת את המדבקה על המשאית בצורה מטורפת ומקצועית! הפינות שלך מושלמות!</p>
+      <button onclick="closeCelebration()" class="bg-sky-600 hover:bg-sky-700 text-white font-black px-6 py-3 rounded-xl transition-all shadow-md">
+        יאללה, למשימה הבאה! 🚀
+      </button>
+    </div>
+  </div>
+
+  <!-- באנר עליון -->
+  <header class="bg-white border-b border-sky-100 shadow-xs sticky top-0 z-40 backdrop-blur-md bg-white/90">
+    <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      
+      <!-- לוגו וכותרת -->
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+          <!-- לוגו GIMP -->
+          <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/The_GIMP_icon_-_v3.0.svg/1280px-The_GIMP_icon_-_v3.0.svg.png" alt="GIMP Logo" class="w-11 h-11 object-contain">
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black text-stone-900 leading-tight">מדבקה לאורך משאית ב-<span class="eng-tag">GIMP</span></h1>
+          <p class="text-xs sm:text-sm text-stone-500 font-medium">י7 תקשוב - התאמת פרספקטיבה נפרדת לכל דופן</p>
+        </div>
+      </div>
+
+      <!-- סטטוס השיעור -->
+      <div class="bg-sky-50 px-4 py-2.5 rounded-xl border border-sky-100 text-sky-700 text-sm font-black">
+        נושא: כלי Perspective 🚚
+      </div>
+
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+    
+    <!-- תיבת מוטיבציה שבועית מהמנטור -->
+    <section class="bg-sky-50/50 border border-sky-100 rounded-3xl p-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4 card-shadow relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-sky-200/20 rounded-full blur-2xl"></div>
+      <div class="flex items-center gap-4 relative z-10">
+        <!-- אוואטר מסתובב מטורלל -->
+        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-sky-500 shadow-md flex-shrink-0 bg-white">
+          <img src="https://lh3.googleusercontent.com/d/1eVsO38Du8cndWqpQdZWL8w_nyQcTk1DR" alt="מנטור מטורלל" class="w-full h-full object-cover avatar-spin">
+        </div>
+        <div>
+          <h4 class="text-sky-800 font-black text-lg">פינת המנטור המטורלל:</h4>
+          <p id="motivation-box" class="text-stone-700 font-bold text-md transition-all duration-300">תזכור אחוואן: מחלקים את המדבקה לשתי שכבות, אחורית וצדדית, ומתאימים כל אחת בנפרד עם <span class="eng-tag">Perspective</span>!</p>
+        </div>
+      </div>
+      <button 
+        onclick="triggerRandomMotivation()"
+        class="bg-sky-600 hover:bg-sky-700 active:scale-95 text-white font-black px-6 py-3 rounded-2xl shadow-md hover:shadow-lg transition-all text-sm whitespace-nowrap"
+      >
+        תדלק אותי במוטיבציה! ⚡
+      </button>
+    </section>
+
+    <!-- גריד ראשי -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <section class="lg:col-span-12 flex flex-col gap-6">
+        
+        <!-- סרגל הטאבים הדינמי -->
+        <div class="w-full overflow-hidden bg-white/40 p-2 rounded-2xl border border-stone-200/60 card-shadow">
+          <div id="tabs-container" class="tabs-scroll flex flex-nowrap overflow-x-auto gap-3 py-1 px-1">
+            <!-- הטאבים ייווצרו דינמית -->
+          </div>
+        </div>
+
+        <!-- כרטיסיית תוכן השיעור הפעיל -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-stone-100 transition-all">
+          
+          <div class="border-b border-stone-100 pb-6 mb-6">
+            <span id="lesson-badge" class="bg-sky-100 text-sky-800 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider mb-3 inline-block">
+              טוען שלב...
+            </span>
+            <h2 id="lesson-title" class="text-2xl sm:text-3xl font-black text-stone-900 mb-2 leading-snug"></h2>
+            <p id="lesson-desc" class="text-stone-600 font-semibold text-base sm:text-lg mb-4 leading-relaxed"></p>
+
+            <!-- אזור תמונות: מדבקה, משאית, יעד -->
+            <div class="my-6 p-4 sm:p-6 bg-stone-50 border border-stone-200 rounded-2xl flex flex-col items-center justify-center gap-4">
+              <span class="text-sm font-extrabold text-stone-700 flex items-center gap-1.5 self-start">
+                <span>📸</span> חומרי העבודה שלך והיעד:
+              </span>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-5xl">
+                <div class="flex flex-col items-center gap-2">
+                  <span class="text-xs font-black text-stone-600 bg-stone-200 px-3 py-1 rounded-full">1. המדבקה</span>
+                  <div class="relative w-full rounded-2xl overflow-hidden border-2 border-stone-300 shadow-md bg-white"><img src="https://lh3.googleusercontent.com/d/1b59WmntuBryTcmHkxQjph7wE3rQ2pPcq" alt="המדבקה" class="w-full h-auto object-contain max-h-64 hover:scale-105 transition-transform duration-300"></div>
+                  <a href="https://drive.google.com/file/d/1b59WmntuBryTcmHkxQjph7wE3rQ2pPcq/view?usp=sharing" target="_blank" rel="noopener" class="text-xs font-bold text-sky-600 hover:underline">פתח ב-<span class="eng-tag">Drive</span> ↗</a>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                  <span class="text-xs font-black text-stone-600 bg-stone-200 px-3 py-1 rounded-full">2. המשאית</span>
+                  <div class="relative w-full rounded-2xl overflow-hidden border-2 border-stone-300 shadow-md bg-white"><img src="https://lh3.googleusercontent.com/d/1cxWvSVbe-bvdNoxaWPT0Nh_QQtyNL6R6" alt="המשאית" class="w-full h-auto object-contain max-h-64 hover:scale-105 transition-transform duration-300"></div>
+                  <a href="https://drive.google.com/file/d/1cxWvSVbe-bvdNoxaWPT0Nh_QQtyNL6R6/view?usp=sharing" target="_blank" rel="noopener" class="text-xs font-bold text-sky-600 hover:underline">פתח ב-<span class="eng-tag">Drive</span> ↗</a>
+                </div>
+                <div class="flex flex-col items-center gap-2">
+                  <span class="text-xs font-black text-sky-700 bg-sky-100 px-3 py-1 rounded-full">3. היעד: מדבקה על המשאית</span>
+                  <div class="relative w-full rounded-2xl overflow-hidden border-2 border-sky-400 border-dashed shadow-md bg-white"><img src="https://lh3.googleusercontent.com/d/12m1B1XIaf5c6f1bAnMv-g2k6m9xJxx0J" alt="התוצאה הסופית" class="w-full h-auto object-contain max-h-64 hover:scale-105 transition-transform duration-300"></div>
+                  <a href="https://drive.google.com/file/d/12m1B1XIaf5c6f1bAnMv-g2k6m9xJxx0J/view?usp=sharing" target="_blank" rel="noopener" class="text-xs font-bold text-sky-600 hover:underline">פתח ב-<span class="eng-tag">Drive</span> ↗</a>
+                </div>
+              </div>
+            </div>
+
+            <div id="lesson-encouragement" class="bg-[#FAF7F0] border-l-4 border-sky-500 p-4 rounded-xl text-stone-700 italic font-bold text-sm leading-relaxed"></div>
+          </div>
+
+          <!-- מד התקדמות מבוסס משימות -->
+          <div class="mb-6">
+            <div class="flex justify-between items-center mb-2">
+              <span class="font-extrabold text-stone-700 text-sm">התקדמות המשימה:</span>
+              <span id="progress-text" class="font-black text-sky-600 text-sm bg-sky-50 px-2.5 py-1 rounded-lg">0% הושלם</span>
+            </div>
+            <div class="w-full bg-stone-100 h-3 rounded-full overflow-hidden">
+              <div id="progress-bar" class="bg-sky-600 h-full rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- שלבי המשימה -->
+          <div class="space-y-4 mb-8">
+            <h3 class="font-black text-lg text-stone-900 mb-2">📋 שלבי העבודה שלך ב-GIMP:</h3>
+            <div id="steps-container" class="space-y-4">
+              <!-- השלבים ייטענו דינמית -->
+            </div>
+          </div>
+
+          <!-- כפתור סיום משימה -->
+          <div class="flex justify-end pt-4 border-t border-stone-100">
+            <button
+              id="finish-btn"
+              disabled
+              onclick="triggerCelebration()"
+              class="w-full sm:w-auto font-black px-8 py-4 rounded-2xl shadow-lg transition-all duration-300 text-center bg-stone-200 text-stone-400 cursor-not-allowed"
+            >
+              השלם את כל השלבים למעלה כדי לסיים
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- פוטר -->
+    <footer class="text-center mt-12 pt-6 border-t border-stone-200 text-xs text-stone-500 font-medium">
+      <p>© 2026 אקדמיית GIMP של האחוואנים. כל הזכויות שמורות למאסטרים של <span class="eng-tag">Perspective</span>.</p>
+      <p class="mt-1 text-sky-600">״שתי שכבות, שתי זוויות – והמדבקה יושבת בול!״</p>
+    </footer>
+
+  </main>
+
+  <script>
+    // מאגר השיעורים - מדבקה לאורך משאית ב-GIMP
+    const lessonsData = [
+      {
+        id: 1,
+        title: '🎯 שלב 1: יצירת שני עותקים למדבקה',
+        subtitle: 'שכפול המדבקה',
+        description: 'הפתרון המקצועי: מחלקים את המדבקה לשתי שכבות נפרדות, אחת לדלתות מאחור ואחת לדופן הצדדית, ומתאימים כל אחת בנפרד.',
+        encouragement: 'שתי שכבות נפרדות = שתי זוויות שונות. זה הסוד שמונע עיוותים!',
+        steps: [
+          { id: '1-1', text: 'ודאו שיש לכם שכבת מדבקה אחת מקורית, ושכפלו אותה כך שיהיו שתי שכבות מדבקה נפרדות בחלון השכבות. קראו לאחת "מדבקה-אחורית" ולשנייה "מדבקה-צדדית".' },
+          { id: '1-2', text: 'הפחיתו את השקיפות (<span class="eng-tag">Opacity</span>) של שתיהן ל-50% כדי שתוכלו לראות דרכן.' }
+        ]
+      },
+      {
+        id: 2,
+        title: '🎯 שלב 2: הלבשת מדבקה על הדלתות מאחור',
+        subtitle: 'התאמת הדופן האחורית',
+        description: 'מתאימים את שכבת "מדבקה-אחורית" לארבע הפינות של הדלתות האחוריות של המשאית.',
+        encouragement: 'דיוק בפינות הוא הכול! זכרו להתקרב (<span class="eng-tag">Zoom</span>) כדי לתפוס כל פינה במדויק.',
+        steps: [
+          { id: '2-1', text: 'כבו את העין של שכבת "מדבקה-צדדית" כדי שלא תפריע.' },
+          { id: '2-2', text: 'בחרו בשכבת "מדבקה-אחורית" ולכו לתפריט: <span class="eng-tag">Tools &gt; Transform Tools &gt; Perspective</span> (או <span class="eng-tag">Shift + P</span>).' },
+          { id: '2-3', text: 'גררו את ארבע הפינות של המדבקה בדיוק אל ארבע הפינות של הדלתות האחוריות של המשאית.' },
+          { id: '2-4', text: 'לחצו על <span class="eng-tag">Transform</span>.' }
+        ]
+      },
+      {
+        id: 3,
+        title: '🎯 שלב 3: הלבשת מדבקה על הצד הארוך',
+        subtitle: 'התאמת הדופן הצדדית',
+        description: 'עכשיו מתאימים את שכבת "מדבקה-צדדית" לדופן הצדדית הארוכה של המשאית.',
+        encouragement: 'חצי מהדרך מאחוריכם! אותו כלי, זווית אחרת.',
+        steps: [
+          { id: '3-1', text: 'הפעילו בחזרה את שתי השכבות, וכבו את העין של השכבה האחורית שכבר סידרתם.' },
+          { id: '3-2', text: 'בחרו בשכבת "מדבקה-צדדית" והפעילו שוב את כלי ה-<span class="eng-tag">Perspective</span> (<span class="eng-tag">Shift + P</span>).' },
+          { id: '3-3', text: 'הפעם גררו את ארבע הפינות שלה כך שישתלבו בדיוק מושלם על ארבע הפינות של הדופן הצדדית הארוכה.' },
+          { id: '3-4', text: 'לחצו על <span class="eng-tag">Transform</span>.' }
+        ]
+      },
+      {
+        id: 4,
+        title: '🎯 שלב 4: איחוד המראה',
+        subtitle: 'החזרת שקיפות וסיום',
+        description: 'מחזירים את השקיפות ומקבלים שתי מדבקות שיושבות בזווית התלת-ממדית של המשאית.',
+        encouragement: 'כמעט שם! עוד רגע המשאית שלכם נראית כאילו המדבקה נולדה עליה.',
+        steps: [
+          { id: '4-1', text: 'החזירו את ה-<span class="eng-tag">Opacity</span> של שתי שכבות המדבקה בחזרה ל-100%.' },
+          { id: '4-2', text: 'כעת יש לכם מדבקה נפרדת לחלק האחורי ומדבקה נפרדת לחלק הצדדי, שתיהן יושבות בדיוק בזווית התלת-ממדית של המשאית בלי להתעוות.' },
+          { id: '4-3', text: 'משם אפשר להמשיך לחיתוך השאריות (בעזרת <span class="eng-tag">Invert</span> ו-<span class="eng-tag">Delete</span>) ולשילוב הידיות, כפי שהסברנו קודם.' }
+        ]
+      }
+    ];
+
+    const encouragingQuotes = [
+      'פשששש יא תותח <span class="eng-tag">GIMP</span>! הפינות יושבות בול!',
+      'אחוואן, ה-<span class="eng-tag">Perspective</span> שלך מדויק ברמת הפיקסל!',
+      'המדבקה הזו נראית כאילו נולדה על המשאית!',
+      'שתי שכבות, שתי זוויות, אפס עיוותים. מקצוען!',
+      'ג׳ימפ מחייך מרוב נחת! עבודה נקייה ומדויקת!',
+      'המשאית נראית מטורפת! עבודה נקייה ומדויקת!',
+      'התלמיד עלה על רבו! מאסטר ג׳ימפ אמיתי, גאה בך!'
+    ];
+
+    let activeTab = 1;
+    let completedSteps = {};
+
+    function renderTabs() {
+      const container = document.getElementById('tabs-container');
+      container.innerHTML = '';
+      
+      lessonsData.forEach((lesson) => {
+        const isActive = activeTab === lesson.id;
+        const tabBtn = document.createElement('button');
+        
+        tabBtn.className = `flex-shrink-0 py-3 px-5 rounded-xl font-bold text-sm transition-all duration-300 flex flex-col items-center justify-center min-w-[180px] border ${
+          isActive 
+            ? 'bg-sky-600 text-white border-sky-600 shadow-md scale-[1.02]' 
+            : 'bg-transparent text-stone-600 border-stone-200 hover:bg-sky-50 hover:text-sky-600'
+        }`;
+        
+        tabBtn.innerHTML = `
+          <span class="text-[10px] uppercase tracking-wider ${isActive ? 'text-sky-200' : 'text-stone-400'}">שלב ${lesson.id}</span>
+          <span class="text-sm font-black mt-0.5 whitespace-nowrap">${lesson.subtitle}</span>
+        `;
+        
+        tabBtn.onclick = () => {
+          activeTab = lesson.id;
+          renderTabs();
+          renderActiveLesson();
+        };
+        
+        container.appendChild(tabBtn);
+      });
+    }
+
+    function renderActiveLesson() {
+      const lesson = lessonsData.find(l => l.id === activeTab);
+      if (!lesson) return;
+
+      document.getElementById('lesson-badge').innerText = `חלק ${lesson.id} מתוך ${lessonsData.length}`;
+      document.getElementById('lesson-title').innerHTML = lesson.title;
+      document.getElementById('lesson-desc').innerHTML = lesson.description;
+      document.getElementById('lesson-encouragement').innerHTML = `💡 "${lesson.encouragement}"`;
+
+      const stepsContainer = document.getElementById('steps-container');
+      stepsContainer.innerHTML = '';
+
+      lesson.steps.forEach((step, index) => {
+        const isChecked = !!completedSteps[step.id];
+        const stepDiv = document.createElement('div');
+        stepDiv.className = `flex gap-4 p-4 rounded-2xl border transition-all cursor-pointer select-none items-start ${
+          isChecked 
+            ? 'bg-sky-50/30 border-sky-300' 
+            : 'bg-white border-stone-200 hover:border-stone-400'
+        }`;
+        
+        stepDiv.onclick = () => toggleStep(step.id);
+
+        stepDiv.innerHTML = `
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center font-black shrink-0 transition-all ${
+            isChecked 
+              ? 'bg-sky-600 text-white rotate-[360deg]' 
+              : 'bg-stone-100 text-stone-600'
+          }">
+            ${isChecked ? `
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            ` : index + 1}
+          </div>
+          <p class="font-bold text-sm sm:text-base leading-relaxed ${
+            isChecked ? 'text-stone-400 line-through' : 'text-stone-800'
+          }">
+            ${step.text}
+          </p>
+        `;
+
+        stepsContainer.appendChild(stepDiv);
+      });
+
+      calculateProgress();
+    }
+
+    function toggleStep(stepId) {
+      completedSteps[stepId] = !completedSteps[stepId];
+      
+      if (completedSteps[stepId]) {
+        const randomEncouragement = encouragingQuotes[Math.floor(Math.random() * encouragingQuotes.length)];
+        document.getElementById('motivation-box').innerHTML = randomEncouragement;
+      }
+      
+      renderActiveLesson();
+    }
+
+    function calculateProgress() {
+      const lesson = lessonsData.find(l => l.id === activeTab);
+      if (!lesson) return;
+
+      const totalSteps = lesson.steps.length;
+      const completedCount = lesson.steps.filter(step => completedSteps[step.id]).length;
+      const progressPercent = Math.round((completedCount / totalSteps) * 100);
+
+      document.getElementById('progress-text').innerText = `${progressPercent}% הושלם`;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+      const finishBtn = document.getElementById('finish-btn');
+      if (progressPercent === 100) {
+        finishBtn.disabled = false;
+        finishBtn.innerText = '🎉 סיימתי להדביק את המדבקה בהצלחה! 🎉';
+        finishBtn.className = 'w-full sm:w-auto font-black px-8 py-4 rounded-2xl shadow-lg transition-all duration-300 text-center bg-sky-600 text-white hover:bg-sky-700 hover:scale-105 active:scale-95 cursor-pointer';
+      } else {
+        finishBtn.disabled = true;
+        finishBtn.innerText = 'השלם את כל השלבים למעלה כדי לסיים';
+        finishBtn.className = 'w-full sm:w-auto font-black px-8 py-4 rounded-2xl shadow-lg transition-all duration-300 text-center bg-stone-200 text-stone-400 cursor-not-allowed';
+      }
+    }
+
+    // פונקציות חלון חגיגה ומודאלים
+    function triggerCelebration() {
+      const overlay = document.getElementById('celebration-overlay');
+      overlay.classList.remove('hidden');
+      setTimeout(() => {
+        overlay.querySelector('div').classList.remove('scale-95');
+        overlay.querySelector('div').classList.add('scale-100');
+      }, 50);
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeCelebration();
+      }
+    });
+
+    function closeCelebration() {
+      const overlay = document.getElementById('celebration-overlay');
+      overlay.querySelector('div').classList.remove('scale-100');
+      overlay.querySelector('div').classList.add('scale-95');
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+      }, 150);
+    }
+
+    function triggerRandomMotivation() {
+      const randomQuote = encouragingQuotes[Math.floor(Math.random() * encouragingQuotes.length)];
+      document.getElementById('motivation-box').innerHTML = randomQuote;
+    }
+
+    window.onload = function() {
+      renderTabs();
+      renderActiveLesson();
+    };
+  </script>
+</body>
+</html>
